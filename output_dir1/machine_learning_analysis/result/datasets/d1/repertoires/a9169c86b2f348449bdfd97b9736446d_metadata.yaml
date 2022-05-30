@@ -1,0 +1,20 @@
+field_list:
+- vj_in_frame
+- productive
+- stop_codon
+- sequence_aas
+- v_genes
+- j_genes
+- v_subgroups
+- j_subgroups
+- v_alleles
+- j_alleles
+- chains
+- counts
+- region_types
+- frame_types
+- sequence_identifiers
+filename: repertoires\a9169c86b2f348449bdfd97b9736446d.tsv
+identifier: a9169c86b2f348449bdfd97b9736446d
+my_signal: false
+subject_id: rep_77

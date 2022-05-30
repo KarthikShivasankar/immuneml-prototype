@@ -1,0 +1,11 @@
+sequence_id	sequence	rev_comp	productive	v_call	d_call	j_call	sequence_alignment	germline_alignment	junction	junction_aa	v_cigar	d_cigar	j_cigar	cdr3_aa	locus	duplicate_count	vj_in_frame	stop_codon	my_signal	v_genes	j_genes	v_subgroups	j_subgroups	region_types	frame_types
+0			T	TRBV1-1*01		TRBJ1-1*01								KIKLRIVCVV	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+1			T	TRBV1-1*01		TRBJ1-1*01								YPEPIMWAPD	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+2			T	TRBV1-1*01		TRBJ1-1*01								AIVERWRTPTVC	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+3			T	TRBV1-1*01		TRBJ1-1*01								WYEEFDVNHK	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+4			T	TRBV1-1*01		TRBJ1-1*01								SMEQGKITKH	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+5			T	TRBV1-1*01		TRBJ1-1*01								ADNGNCHYST	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+6			T	TRBV1-1*01		TRBJ1-1*01								WMRPKILIEN	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+7			T	TRBV1-1*01		TRBJ1-1*01								LHRQRPKEPIFV	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+8			T	TRBV1-1*01		TRBJ1-1*01								DKESGDCFWQ	TRB	1	T	F		TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN
+9			T	TRBV1-1*01		TRBJ1-1*01								SHWREGAAKDEM	TRB	1	T	F	ImplantAnnotation(signal_id='my_signal', motif_id='my_motif', motif_instance=<immuneML.simulation.implants.MotifInstance.MotifInstance object at 0x00000281D02BB8E0>, position=6)	TRBV1-1	TRBJ1-1	TRBV1	TRBJ1	IMGT_CDR3	IN

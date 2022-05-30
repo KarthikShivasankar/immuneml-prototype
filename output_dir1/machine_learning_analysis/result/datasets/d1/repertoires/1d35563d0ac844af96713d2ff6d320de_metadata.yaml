@@ -1,0 +1,21 @@
+field_list:
+- vj_in_frame
+- productive
+- stop_codon
+- my_signal
+- sequence_aas
+- v_genes
+- j_genes
+- v_subgroups
+- j_subgroups
+- v_alleles
+- j_alleles
+- chains
+- counts
+- region_types
+- frame_types
+- sequence_identifiers
+filename: repertoires\1d35563d0ac844af96713d2ff6d320de.tsv
+identifier: 1d35563d0ac844af96713d2ff6d320de
+my_signal: true
+subject_id: rep_9

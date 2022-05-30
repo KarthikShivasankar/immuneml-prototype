@@ -1,0 +1,20 @@
+field_list:
+- vj_in_frame
+- productive
+- stop_codon
+- sequence_aas
+- v_genes
+- j_genes
+- v_subgroups
+- j_subgroups
+- v_alleles
+- j_alleles
+- chains
+- counts
+- region_types
+- frame_types
+- sequence_identifiers
+filename: repertoires\aa9f1218006a4ad480c21f702e3b5d84.tsv
+identifier: aa9f1218006a4ad480c21f702e3b5d84
+my_signal: false
+subject_id: rep_68
