@@ -85,7 +85,7 @@ class DaskSklearnMethod(MLMethod):
     FIT_CV = "fit_CV"
     FIT = "fit"
 
-    client = Client()
+    # client = Client()
 
     def __init__(self, parameter_grid: dict = None, parameters: dict = None):
         super(DaskSklearnMethod, self).__init__()
@@ -104,7 +104,7 @@ class DaskSklearnMethod(MLMethod):
         self.class_mapping = None
         self.label = None
 
-    def fit(self, encoded_data: EncodedData, label: Label, cores_for_training: int = 2):
+    def fit(self, encoded_data: EncodedData, label: Label, cores_for_training: int = 2, cluster: Client = None):
 
         self.label = label
         self.class_mapping = Util.make_class_mapping(
@@ -115,7 +115,7 @@ class DaskSklearnMethod(MLMethod):
             encoded_data.labels[self.label.name], self.class_mapping)
 
         self.model = self._fit(encoded_data.examples,
-                               mapped_y)
+                               mapped_y, cluster)
 
     def predict(self, encoded_data: EncodedData, label: Label):
         self.check_is_fitted(label.name)
@@ -130,14 +130,14 @@ class DaskSklearnMethod(MLMethod):
         else:
             return None
 
-    def _fit(self, X, y, cores_for_training: int = 1):
+    def _fit(self, X, y, cluster, cores_for_training: int = 1):
         if not self.show_warnings:
             warnings.simplefilter("ignore")
             os.environ["PYTHONWARNINGS"] = "ignore"
 
         self.model = self._get_ml_model(cores_for_training, X)
 
-        if self.client == None:
+        if cluster == None:
 
             self.model.fit(X, y)
 
@@ -149,15 +149,12 @@ class DaskSklearnMethod(MLMethod):
                 print("DASK workflow")
                 self.model.fit(X, y)
 
-            
-
         if not self.show_warnings:
             del os.environ["PYTHONWARNINGS"]
             warnings.simplefilter("always")
 
         return self.model
 
-      
     def convert_to_onnx(self, training_data: EncodedData, path: Path):
 
         if self.model is not None:
