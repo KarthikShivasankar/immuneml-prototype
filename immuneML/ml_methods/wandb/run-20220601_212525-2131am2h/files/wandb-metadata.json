@@ -1,0 +1,23 @@
+{
+    "os": "Windows-10-10.0.19044-SP0",
+    "python": "3.8.12",
+    "heartbeatAt": "2022-06-01T19:25:33.920240",
+    "startedAt": "2022-06-01T19:25:25.972559",
+    "docker": null,
+    "gpu": "GeForce GTX 1050",
+    "gpu_count": 1,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": null,
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "git@personal:KarthikShivasankar/immuneml-prototype.git",
+        "commit": "3594196847276425e33856581f8d3dab7ec12e42"
+    },
+    "email": "karthik13sankar@outlook.com",
+    "root": "C:/Users/karth/Desktop/PhD projects/immuneML/dev_immuneML/immuneML",
+    "host": "DESKTOP-JVQTE5K",
+    "username": "karth",
+    "executable": "c:\\Users\\karth\\anaconda3\\envs\\test\\python.exe"
+}

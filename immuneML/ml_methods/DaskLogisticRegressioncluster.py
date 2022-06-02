@@ -1,10 +1,10 @@
-from sklearn.linear_model import LogisticRegression as SklearnLogisticRegression
-
-from DaskSklearnMethod import DaskSklearnMethod
+# from sklearn.linear_model import LogisticRegression as SklearnLogisticRegression
+from dask_ml.linear_model import LogisticRegression
+from DaskMlMethod import DaskMlMethod
 from scripts.specification_util import update_docs_per_mapping
 
 
-class DaskLogisticRegression(DaskSklearnMethod):
+class DaskLogisticRegressioncluster(DaskMlMethod):
     """
     This is a wrapper of scikit-learn’s LogisticRegression class. Please see the
     `scikit-learn documentation <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_
@@ -49,14 +49,14 @@ class DaskLogisticRegression(DaskSklearnMethod):
         else:
             parameter_grid = {"max_iter": [1000]}
 
-        super(DaskLogisticRegression, self).__init__(
+        super(DaskLogisticRegressioncluster, self).__init__(
             parameter_grid=parameter_grid, parameters=parameters)
 
     def _get_ml_model(self, cores_for_training: int = 2, X=None):
         params = self._parameters.copy()
         print(params)
         # params["n_jobs"] = cores_for_training
-        return SklearnLogisticRegression(**params)
+        return LogisticRegression(**params)
 
     def can_predict_proba(self) -> bool:
         return True
@@ -69,7 +69,7 @@ class DaskLogisticRegression(DaskSklearnMethod):
 
     @staticmethod
     def get_documentation():
-        doc = str(DaskLogisticRegression.__doc__)
+        doc = str(DaskLogisticRegressioncluster.__doc__)
 
         mapping = {
             "For usage instructions, check :py:obj:`~immuneML.ml_methods.SklearnMethod.SklearnMethod`.": SklearnMethod.get_usage_documentation(

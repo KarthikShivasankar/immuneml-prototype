@@ -7,8 +7,8 @@ import dill
 import numpy as np
 import pkg_resources
 import yaml
-from sklearn.metrics import SCORERS
-from sklearn.model_selection import RandomizedSearchCV
+from dask_ml.metrics import accuracy_score
+from dask_ml.model_selection import RandomizedSearchCV
 from sklearn.utils.validation import check_is_fitted
 
 from immuneML.data_model.encoded_data.EncodedData import EncodedData
@@ -36,7 +36,7 @@ import os
 load_dotenv()
 
 
-class DaskSklearnMethod(MLMethod):
+class DaskMlMethod(MLMethod):
     """
     Base class for ML methods imported from scikit-learn. The classes inheriting SklearnMethod acting as wrappers around imported
     ML methods from scikit-learn have to implement:
@@ -88,7 +88,7 @@ class DaskSklearnMethod(MLMethod):
     client = Client()
 
     def __init__(self, parameter_grid: dict = None, parameters: dict = None):
-        super(DaskSklearnMethod, self).__init__()
+        super(DaskMlMethod, self).__init__()
         self.model = None
 
         if parameter_grid is not None and "show_warnings" in parameter_grid:
@@ -143,13 +143,10 @@ class DaskSklearnMethod(MLMethod):
 
         else:
 
-            with joblib.parallel_backend("dask"):
-                print(self._get_model_filename)
-                print(self.model.__dict__)
-                print("DASK workflow")
-                self.model.fit(X, y)
-
-            
+            print(self._get_model_filename)
+            print(self.model.__dict__)
+            print("DASK workflow")
+            self.model.fit(X, y)
 
         if not self.show_warnings:
             del os.environ["PYTHONWARNINGS"]
@@ -157,7 +154,6 @@ class DaskSklearnMethod(MLMethod):
 
         return self.model
 
-      
     def convert_to_onnx(self, training_data: EncodedData, path: Path):
 
         if self.model is not None:

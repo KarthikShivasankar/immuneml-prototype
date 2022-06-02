@@ -1,0 +1,23 @@
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\distributed\node.py:180: UserWarning: Port 8787 is already in use.
+Perhaps you already have a cluster running?
+Hosting the HTTP server on port 49760 instead
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+c:\Users\karth\anaconda3\envs\test\lib\site-packages\sklearn\utils\validation.py:593: FutureWarning: np.matrix usage is deprecated in 1.0 and will raise a TypeError in 1.2. Please convert to a numpy array with np.asarray. For more information see: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
+  warnings.warn(
+{'max_iter': 1000, 'solver': 'saga'}
+<bound method DaskMlMethod._get_model_filename of <DaskLogisticRegressioncluster.DaskLogisticRegressioncluster object at 0x0000027D7ABA3790>>
+{'penalty': 'l2', 'dual': False, 'tol': 0.0001, 'C': 1.0, 'fit_intercept': True, 'intercept_scaling': 1.0, 'class_weight': None, 'random_state': None, 'solver': 'saga', 'max_iter': 1000, 'multi_class': 'ovr', 'verbose': 0, 'warm_start': False, 'n_jobs': 1, 'solver_kwargs': None}
+DASK workflow
+{'max_iter': 1000, 'solver': 'saga'}
+<bound method DaskMlMethod._get_model_filename of <DaskLogisticRegressioncluster.DaskLogisticRegressioncluster object at 0x0000027D7ABA3790>>
+{'penalty': 'l2', 'dual': False, 'tol': 0.0001, 'C': 1.0, 'fit_intercept': True, 'intercept_scaling': 1.0, 'class_weight': None, 'random_state': None, 'solver': 'saga', 'max_iter': 1000, 'multi_class': 'ovr', 'verbose': 0, 'warm_start': False, 'n_jobs': 1, 'solver_kwargs': None}
