@@ -4,13 +4,14 @@ from immuneML.data_model.dataset.Dataset import Dataset
 from immuneML.environment import Label
 from immuneML.ml_methods.MLMethod import MLMethod
 from immuneML.workflows.steps.StepParams import StepParams
+from dask.distributed import Client
 
 
 class MLMethodTrainerParams(StepParams):
 
     def __init__(self, method: MLMethod, dataset: Dataset, result_path: Path, label: Label, model_selection_cv: bool,
                  model_selection_n_folds: int, cores_for_training: int, train_predictions_path: Path, ml_details_path: Path,
-                 optimization_metric: str):
+                 optimization_metric: str, cluster: Client):
         self.method = method
         self.result_path = result_path
         self.dataset = dataset
@@ -21,3 +22,4 @@ class MLMethodTrainerParams(StepParams):
         self.train_predictions_path = train_predictions_path
         self.ml_details_path = ml_details_path
         self.optimization_metric = optimization_metric
+        self.cluster = cluster

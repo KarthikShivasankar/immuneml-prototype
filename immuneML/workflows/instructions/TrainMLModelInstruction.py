@@ -19,6 +19,7 @@ from immuneML.util.ReflectionHandler import ReflectionHandler
 from immuneML.workflows.instructions.Instruction import Instruction
 from immuneML.workflows.instructions.MLProcess import MLProcess
 from scripts.specification_util import update_docs_per_mapping
+from dask.distributed import Client
 
 
 class TrainMLModelInstruction(Instruction):
@@ -120,11 +121,24 @@ class TrainMLModelInstruction(Instruction):
     """
 
     def __init__(self, dataset, hp_strategy: HPOptimizationStrategy, hp_settings: list, assessment: SplitConfig, selection: SplitConfig,
-                 metrics: set, optimization_metric: Metric, label_configuration: LabelConfiguration, path: Path = None, context: dict = None,
+                 metrics: set, optimization_metric: Metric, label_configuration: LabelConfiguration, cluster: bool,  path: Path = None, context: dict = None,
                  number_of_processes: int = 1, reports: dict = None, name: str = None, refit_optimal_model: bool = False):
+
+        print(cluster)
+
+        if cluster == True:
+
+            cluster = Client()
+
+        else:
+
+            cluster = None
+
+        print(cluster.__dict__)
+
         self.state = TrainMLModelState(dataset, hp_strategy, hp_settings, assessment, selection, metrics,
                                        optimization_metric, label_configuration, path, context, number_of_processes,
-                                       reports if reports is not None else {}, name, refit_optimal_model)
+                                       reports if reports is not None else {}, name, refit_optimal_model, cluster)
 
     def run(self, result_path: Path):
         self.state.path = result_path
@@ -154,7 +168,7 @@ class TrainMLModelInstruction(Instruction):
             print(f"{datetime.datetime.now()}: TrainMLModel: retraining optimal model for label {label.name} {index_repr}.\n", flush=True)
             self.state.optimal_hp_items[label.name] = MLProcess(self.state.dataset, None, label, self.state.metrics, self.state.optimization_metric,
                                                                 self.state.path / f"optimal_{label.name}", number_of_processes=self.state.number_of_processes,
-                                                                label_config=self.state.label_configuration, hp_setting=optimal_hp_setting).run(0)
+                                                                label_config=self.state.label_configuration, hp_setting=optimal_hp_setting, cluster=self.state.cluster).run(0)
             print(f"{datetime.datetime.now()}: TrainMLModel: finished retraining optimal model for label {label.name} {index_repr}.\n", flush=True)
 
         else:

@@ -1,6 +1,6 @@
 # from sklearn.linear_model import LogisticRegression as SklearnLogisticRegression
 from dask_ml.linear_model import LogisticRegression
-from DaskMlMethod import DaskMlMethod
+from immuneML.ml_methods.DaskMlMethod import DaskMlMethod
 from scripts.specification_util import update_docs_per_mapping
 
 

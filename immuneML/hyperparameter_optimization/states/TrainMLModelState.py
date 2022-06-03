@@ -11,6 +11,7 @@ from immuneML.hyperparameter_optimization.states.HPItem import HPItem
 from immuneML.hyperparameter_optimization.strategy.HPOptimizationStrategy import HPOptimizationStrategy
 from immuneML.ml_metrics.Metric import Metric
 from immuneML.reports.ReportResult import ReportResult
+from dask.distributed import Client
 
 
 @dataclass
@@ -29,6 +30,7 @@ class TrainMLModelState:
     reports: dict = field(default_factory=dict)
     name: str = None
     refit_optimal_model: bool = None
+    cluster: Client = None
     optimal_hp_items: Dict[str, HPItem] = field(default_factory=dict)
     optimal_hp_item_paths: Dict[str, str] = field(default_factory=dict)
     assessment_states: List[HPAssessmentState] = field(default_factory=list)

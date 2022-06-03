@@ -15,13 +15,18 @@ from immuneML.workflows.steps.Step import Step
 
 
 class MLMethodAssessment(Step):
-    fieldnames = ["run", "optimal_method_params", "method", "encoding_params", "encoding", "evaluated_on"]
+    fieldnames = ["run", "optimal_method_params", "method",
+                  "encoding_params", "encoding", "evaluated_on"]
 
     @staticmethod
     def run(input_params: MLMethodAssessmentParams = None):
+
+        print("assestment", input_params)
+
         X = input_params.dataset.encoded_data
         predicted_y = input_params.method.predict(X, input_params.label)
-        predicted_proba_y = input_params.method.predict_proba(X, input_params.label)
+        predicted_proba_y = input_params.method.predict_proba(
+            X, input_params.label)
         true_y = input_params.dataset.encoded_data.labels
 
         example_ids = input_params.dataset.get_example_ids()
@@ -46,7 +51,8 @@ class MLMethodAssessment(Step):
         metrics_with_optim_metric = set(metrics_list)
         metrics_with_optim_metric.add(optimization_metric)
 
-        metrics_with_optim_metric = sorted(list(metrics_with_optim_metric), key=lambda metric: metric.name)
+        metrics_with_optim_metric = sorted(
+            list(metrics_with_optim_metric), key=lambda metric: metric.name)
 
         for metric in metrics_with_optim_metric:
             predicted_proba_y_label = predicted_proba_y[label_name] if predicted_proba_y is not None else None
@@ -74,7 +80,8 @@ class MLMethodAssessment(Step):
         else:
             fn = getattr(metrics, metric.value)
 
-        true_y, predicted_y = Util.binarize_label_classes(true_y=true_y, predicted_y=predicted_y, classes=classes)
+        true_y, predicted_y = Util.binarize_label_classes(
+            true_y=true_y, predicted_y=predicted_y, classes=classes)
 
         try:
             if metric in Metric.get_probability_based_metric_types():
@@ -108,7 +115,8 @@ class MLMethodAssessment(Step):
 
         classes = method.get_classes()
         for cls_index, cls in enumerate(classes):
-            tmp = predicted_proba_y[label_name][:, cls_index] if predicted_proba_y is not None and predicted_proba_y[label_name] is not None else None
+            tmp = predicted_proba_y[label_name][:,
+                                                cls_index] if predicted_proba_y is not None and predicted_proba_y[label_name] is not None else None
             df[f"{label_name}_{cls}_proba"] = tmp
 
         if predictions_path is not None:

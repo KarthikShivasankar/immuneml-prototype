@@ -1,4 +1,5 @@
 import copy
+from multiprocessing.connection import Client
 from pathlib import Path
 from typing import List
 
@@ -29,7 +30,8 @@ class HPUtil:
 
     @staticmethod
     def split_data(dataset: Dataset, split_config: SplitConfig, path: Path, label_config: LabelConfiguration) -> tuple:
-        paths = [path / f"split_{i + 1}" for i in range(split_config.split_count)]
+        paths = [
+            path / f"split_{i + 1}" for i in range(split_config.split_count)]
         params = DataSplitterParams(
             dataset=dataset,
             split_strategy=split_config.split_strategy,
@@ -53,16 +55,20 @@ class HPUtil:
         if dataset is not None:
             if isinstance(preproc_sequence, list) and len(preproc_sequence) > 0:
                 PathBuilder.build(path)
-                tmp_dataset = dataset.clone() if context is None or "dataset" not in context else context["dataset"]
+                tmp_dataset = dataset.clone(
+                ) if context is None or "dataset" not in context else context["dataset"]
 
                 for preprocessing in preproc_sequence:
-                    tmp_dataset = preprocessing.process_dataset(tmp_dataset, path)
+                    tmp_dataset = preprocessing.process_dataset(
+                        tmp_dataset, path)
 
                 if context is not None and "dataset" in context:
-                    context["preprocessed_dataset"] = {str(hp_setting): tmp_dataset}
+                    context["preprocessed_dataset"] = {
+                        str(hp_setting): tmp_dataset}
                     indices = [i for i in range(context["dataset"].get_example_count())
                                if context["dataset"].repertoires[i].identifier in dataset.get_example_ids()]
-                    preprocessed_dataset = tmp_dataset.make_subset(indices, path, Dataset.PREPROCESSED)
+                    preprocessed_dataset = tmp_dataset.make_subset(
+                        indices, path, Dataset.PREPROCESSED)
                 else:
                     preprocessed_dataset = tmp_dataset
 
@@ -71,7 +77,9 @@ class HPUtil:
                 return dataset
 
     @staticmethod
-    def train_method(label: Label, dataset, hp_setting: HPSetting, path: Path, train_predictions_path, ml_details_path, cores_for_training, optimization_metric) -> MLMethod:
+    def train_method(label: Label, dataset, hp_setting: HPSetting, path: Path, train_predictions_path, ml_details_path, cores_for_training, optimization_metric, cluster) -> MLMethod:
+
+        print(cluster)
         method = MLMethodTrainer.run(MLMethodTrainerParams(
             method=copy.deepcopy(hp_setting.ml_method),
             result_path=path / "ml_method",
@@ -82,7 +90,8 @@ class HPUtil:
             model_selection_cv=hp_setting.ml_params["model_selection_cv"],
             model_selection_n_folds=hp_setting.ml_params["model_selection_n_folds"],
             cores_for_training=cores_for_training,
-            optimization_metric=optimization_metric.name.lower()
+            optimization_metric=optimization_metric.name.lower(),
+            cluster=cluster
         ))
         return method
 
@@ -108,7 +117,7 @@ class HPUtil:
 
     @staticmethod
     def assess_performance(method, metrics, optimization_metric, dataset, split_index, current_path: Path, test_predictions_path: Path, label: Label,
-                           ml_score_path: Path):
+                           ml_score_path: Path, cluster):
         return MLMethodAssessment.run(MLMethodAssessmentParams(
             method=method,
             dataset=dataset,
@@ -118,7 +127,8 @@ class HPUtil:
             metrics=metrics,
             optimization_metric=optimization_metric,
             path=current_path,
-            ml_score_path=ml_score_path
+            ml_score_path=ml_score_path,
+            cluster=cluster
         ))
 
     @staticmethod

@@ -70,13 +70,13 @@ class TrainMLModelParser:
         path = self._prepare_path(instruction)
         context = self._prepare_context(instruction, symbol_table)
         reports = self._prepare_reports(instruction["reports"], symbol_table)
-        
-    
+
+        print(instruction["Distributed_workflow"])
 
         hp_instruction = TrainMLModelInstruction(dataset=dataset, hp_strategy=strategy(settings, metric_search_criterion),
                                                  hp_settings=settings, assessment=assessment, selection=selection, metrics=metrics,
                                                  optimization_metric=optimization_metric, refit_optimal_model=instruction[
-                                                     'refit_optimal_model'], Distributed_workflow = instruction["Distributed_workflow"],
+                                                     'refit_optimal_model'], cluster=instruction["Distributed_workflow"],
                                                  label_configuration=label_config, path=path, context=context,
                                                  number_of_processes=instruction["number_of_processes"], reports=reports, name=key)
 

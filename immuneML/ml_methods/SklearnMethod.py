@@ -18,6 +18,8 @@ from immuneML.ml_methods.util.Util import Util
 from immuneML.ml_metrics.Metric import Metric
 from immuneML.util.FilenameHandler import FilenameHandler
 from immuneML.util.PathBuilder import PathBuilder
+from dask.distributed import Client
+import joblib
 
 
 class SklearnMethod(MLMethod):
@@ -86,15 +88,18 @@ class SklearnMethod(MLMethod):
         self.class_mapping = None
         self.label = None
 
-    def fit(self, encoded_data: EncodedData, label: Label, cores_for_training: int = 2):
+    def fit(self, encoded_data: EncodedData, label: Label, cores_for_training: int = 2, cluster: Client = None):
 
         self.label = label
-        self.class_mapping = Util.make_class_mapping(encoded_data.labels[self.label.name])
+        self.class_mapping = Util.make_class_mapping(
+            encoded_data.labels[self.label.name])
         self.feature_names = encoded_data.feature_names
 
-        mapped_y = Util.map_to_new_class_values(encoded_data.labels[self.label.name], self.class_mapping)
+        mapped_y = Util.map_to_new_class_values(
+            encoded_data.labels[self.label.name], self.class_mapping)
 
-        self.model = self._fit(encoded_data.examples, mapped_y, cores_for_training)
+        self.model = self._fit(encoded_data.examples,
+                               mapped_y, cluster, cores_for_training)
 
     def predict(self, encoded_data: EncodedData, label: Label):
         self.check_is_fitted(label.name)
@@ -103,18 +108,32 @@ class SklearnMethod(MLMethod):
 
     def predict_proba(self, encoded_data: EncodedData, label: Label):
         if self.can_predict_proba():
-            predictions = {label.name: self.model.predict_proba(encoded_data.examples)}
+            predictions = {label.name: self.model.predict_proba(
+                encoded_data.examples)}
             return predictions
         else:
             return None
 
-    def _fit(self, X, y, cores_for_training: int = 1):
+    def _fit(self, X, y, cluster, cores_for_training: int = 1):
         if not self.show_warnings:
             warnings.simplefilter("ignore")
             os.environ["PYTHONWARNINGS"] = "ignore"
 
         self.model = self._get_ml_model(cores_for_training, X)
-        self.model.fit(X, y)
+
+        if cluster == None:
+
+            self.model.fit(X, y)
+
+        else:
+
+            with joblib.parallel_backend("dask"):
+                print(self._get_model_filename)
+                print(self.model.__dict__)
+                print("DASK workflow")
+                self.model.fit(X, y)
+
+        # self.model.fit(X, y)
 
         if not self.show_warnings:
             del os.environ["PYTHONWARNINGS"]
@@ -130,21 +149,24 @@ class SklearnMethod(MLMethod):
             return check_is_fitted(self.model, ["estimators_", "coef_", "estimator", "_fit_X", "dual_coef_"], all_or_any=any)
 
     def fit_by_cross_validation(self, encoded_data: EncodedData, number_of_splits: int = 5, label: Label = None, cores_for_training: int = -1,
-                                optimization_metric='balanced_accuracy'):
+                                optimization_metric='balanced_accuracy', cluster: Client = None):
 
-        self.class_mapping = Util.make_class_mapping(encoded_data.labels[label.name])
+        self.class_mapping = Util.make_class_mapping(
+            encoded_data.labels[label.name])
         self.feature_names = encoded_data.feature_names
         self.label = label
-        mapped_y = Util.map_to_new_class_values(encoded_data.labels[self.label.name], self.class_mapping)
+        mapped_y = Util.map_to_new_class_values(
+            encoded_data.labels[self.label.name], self.class_mapping)
 
         self.model = self._fit_by_cross_validation(encoded_data.examples, mapped_y, number_of_splits, label, cores_for_training,
-                                                  optimization_metric)
+                                                   optimization_metric)
 
     def _fit_by_cross_validation(self, X, y, number_of_splits: int = 5, label: Label = None, cores_for_training: int = 1,
                                  optimization_metric: str = "balanced_accuracy"):
 
         model = self._get_ml_model()
-        scoring = Metric.get_sklearn_score_name(Metric[optimization_metric.upper()])
+        scoring = Metric.get_sklearn_score_name(
+            Metric[optimization_metric.upper()])
 
         if scoring not in SCORERS.keys():
             scoring = "balanced_accuracy"
@@ -163,7 +185,8 @@ class SklearnMethod(MLMethod):
             del os.environ["PYTHONWARNINGS"]
             warnings.simplefilter("always")
 
-        self.model = self.model.best_estimator_  # do not leave RandomSearchCV object to be in models, use the best estimator instead
+        # do not leave RandomSearchCV object to be in models, use the best estimator instead
+        self.model = self.model.best_estimator_
 
         return self.model
 

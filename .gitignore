@@ -18,6 +18,8 @@ lib64/
 parts/
 **/dask-worker-space
 dask-worker-space/
+quickstart/
+output_dir1/
 
 sdist/
 var/

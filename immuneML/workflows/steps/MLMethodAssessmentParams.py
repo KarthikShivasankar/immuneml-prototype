@@ -5,12 +5,13 @@ from immuneML.environment.Label import Label
 from immuneML.ml_methods.MLMethod import MLMethod
 from immuneML.ml_metrics.Metric import Metric
 from immuneML.workflows.steps.StepParams import StepParams
+from dask.distributed import Client
 
 
 class MLMethodAssessmentParams(StepParams):
 
     def __init__(self, method: MLMethod, dataset: Dataset, metrics: set, optimization_metric: Metric, label: Label,
-                 path: Path, split_index: int, predictions_path: Path, ml_score_path: Path):
+                 path: Path, split_index: int, predictions_path: Path, ml_score_path: Path, cluster: Client):
         self.method = method
         self.dataset = dataset
         self.metrics = metrics
@@ -20,3 +21,4 @@ class MLMethodAssessmentParams(StepParams):
         self.split_index = split_index
         self.predictions_path = predictions_path
         self.ml_score_path = ml_score_path
+        self.cluster = cluster

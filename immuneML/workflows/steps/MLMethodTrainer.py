@@ -14,7 +14,7 @@ class MLMethodTrainer(Step):
     def run(input_params: MLMethodTrainerParams = None):
 
         print(f"{datetime.datetime.now()}: ML model training started...", flush=True)
-
+        print(input_params)
         method = MLMethodTrainer._fit_method(input_params)
         MLMethodTrainer.store(method, input_params)
 
@@ -32,9 +32,9 @@ class MLMethodTrainer(Step):
                                            number_of_splits=input_params.model_selection_n_folds,
                                            label=input_params.label,
                                            cores_for_training=input_params.cores_for_training,
-                                           optimization_metric=input_params.optimization_metric)
+                                           optimization_metric=input_params.optimization_metric, cluster = input_params.cluster)
         else:
-            method.fit(encoded_data=input_params.dataset.encoded_data, label=input_params.label, cores_for_training=input_params.cores_for_training)
+            method.fit(encoded_data=input_params.dataset.encoded_data, label=input_params.label, cores_for_training=input_params.cores_for_training, cluster = input_params.cluster)
 
         return method
 
