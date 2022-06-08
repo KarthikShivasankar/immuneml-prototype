@@ -41,6 +41,7 @@ class HPHTMLBuilder:
         """
 
         base_path = PathBuilder.build(state.path / "../HTML_output/")
+        print(base_path, state)
         state = HPHTMLBuilder._move_reports_recursive(state, base_path)
         html_map = HPHTMLBuilder._make_main_html_map(state, base_path)
         result_file = base_path / f"TrainMLModelReport_{state.name}.html"
@@ -57,7 +58,8 @@ class HPHTMLBuilder:
         for label_name in state.label_configuration.get_labels_by_name():
             for assessment_index in range(state.assessment.split_count):
                 TemplateParser.parse(template_path=EnvironmentSettings.html_templates_path / "SelectionDetails.html",
-                                     template_map=HPHTMLBuilder._make_selection(state, assessment_index, label_name, base_path),
+                                     template_map=HPHTMLBuilder._make_selection(
+                                         state, assessment_index, label_name, base_path),
                                      result_path=base_path / HPHTMLBuilder._make_selection_split_path(assessment_index, label_name, state.name))
 
         return result_file
@@ -80,7 +82,8 @@ class HPHTMLBuilder:
         for hp_setting, hp_items in selection_state.hp_items.items():
             hp_splits = []
             for hp_item in hp_items:
-                hp_splits.append(HPHTMLBuilder._print_metric(hp_item.performance, state.optimization_metric))
+                hp_splits.append(HPHTMLBuilder._print_metric(
+                    hp_item.performance, state.optimization_metric))
             hp_settings.append({
                 "hp_setting": hp_setting,
                 "hp_splits": hp_splits,
@@ -88,16 +91,19 @@ class HPHTMLBuilder:
             })
 
             if len(hp_splits) > 1:
-                hp_settings[-1]["average"] = round(statistics.mean(perf for perf in hp_splits if [isinstance(perf, float)]), HPHTMLBuilder.NUM_DIGITS)
+                hp_settings[-1]["average"] = round(statistics.mean(perf for perf in hp_splits if [
+                                                   isinstance(perf, float)]), HPHTMLBuilder.NUM_DIGITS)
                 hp_settings[-1]["show_average"] = True
             else:
                 hp_settings[-1]["average"] = None
                 hp_settings[-1]["show_average"] = False
 
-            hp_settings[-1]["hp_splits"] = [{"optimization_metric_val": val} for val in hp_settings[-1]["hp_splits"]]
+            hp_settings[-1]["hp_splits"] = [{"optimization_metric_val": val}
+                                            for val in hp_settings[-1]["hp_splits"]]
 
         has_other_metrics = len([metric for metric in state.metrics if metric != state.optimization_metric]) > 0 and \
-                            not (state.selection.split_strategy == SplitType.RANDOM and state.selection.training_percentage == 1)
+            not (state.selection.split_strategy ==
+                 SplitType.RANDOM and state.selection.training_percentage == 1)
 
         return {
             "css_style": Util.get_css_content(HPHTMLBuilder.CSS_PATH),
@@ -162,31 +168,40 @@ class HPHTMLBuilder:
                                "show_data_reports": len(assessment_state.train_val_data_reports) > 0 or len(assessment_state.test_data_reports) > 0}
 
             if hasattr(assessment_state.train_val_dataset, "metadata_file") and assessment_state.train_val_dataset.metadata_file is not None:
-                assessment_item["train_metadata_path"] = os.path.relpath(str(assessment_state.train_val_dataset.metadata_file), str(base_path))
-                assessment_item["train_metadata"] = Util.get_table_string_from_csv(assessment_state.train_val_dataset.metadata_file)
+                assessment_item["train_metadata_path"] = os.path.relpath(
+                    str(assessment_state.train_val_dataset.metadata_file), str(base_path))
+                assessment_item["train_metadata"] = Util.get_table_string_from_csv(
+                    assessment_state.train_val_dataset.metadata_file)
             else:
                 assessment_item["train_metadata_path"] = None
 
             if hasattr(assessment_state.test_dataset, "metadata_file") and assessment_state.test_dataset.metadata_file is not None:
-                assessment_item['test_metadata_path'] = os.path.relpath(assessment_state.test_dataset.metadata_file, base_path)
-                assessment_item["test_metadata"] = Util.get_table_string_from_csv(assessment_state.test_dataset.metadata_file)
+                assessment_item['test_metadata_path'] = os.path.relpath(
+                    assessment_state.test_dataset.metadata_file, base_path)
+                assessment_item["test_metadata"] = Util.get_table_string_from_csv(
+                    assessment_state.test_dataset.metadata_file)
             else:
                 assessment_item["test_metadata_path"] = None
 
             assessment_item["label"] = label_name
             for hp_setting, item in assessment_state.label_states[label_name].assessment_items.items():
-                optimal = str(assessment_state.label_states[label_name].optimal_hp_setting.get_key())
-                reports_path = HPHTMLBuilder._make_assessment_reports(state, i, hp_setting, assessment_state, label_name, base_path)
+                optimal = str(
+                    assessment_state.label_states[label_name].optimal_hp_setting.get_key())
+                reports_path = HPHTMLBuilder._make_assessment_reports(
+                    state, i, hp_setting, assessment_state, label_name, base_path)
                 assessment_item["hp_settings"].append({
                     "optimal": str(hp_setting) == optimal,
                     "hp_setting": str(hp_setting),
                     "optimization_metric_val": HPHTMLBuilder._print_metric(item.performance, state.optimization_metric),
                     "reports_path": reports_path
                 })
-            assessment_item["show_non_optimal"] = len(assessment_item["hp_settings"]) > 1
+            assessment_item["show_non_optimal"] = len(
+                assessment_item["hp_settings"]) > 1
 
-            assessment_item["selection_path"] = HPHTMLBuilder._make_selection_split_path(i, label_name, state.name)
-            assessment_item['performances_per_metric'] = HPHTMLBuilder._extract_assessment_performances_per_metric(state, assessment_state, label_name)
+            assessment_item["selection_path"] = HPHTMLBuilder._make_selection_split_path(
+                i, label_name, state.name)
+            assessment_item['performances_per_metric'] = HPHTMLBuilder._extract_assessment_performances_per_metric(
+                state, assessment_state, label_name)
 
             assessment_list.append(assessment_item)
 
@@ -194,11 +209,13 @@ class HPHTMLBuilder:
 
     @staticmethod
     def _extract_assessment_performances_per_metric(state: TrainMLModelState, assessment_state: HPAssessmentState, label_name: str) -> str:
-        performance_metric = {"setting": [], **{metric.name.lower(): [] for metric in state.metrics}}
+        performance_metric = {
+            "setting": [], **{metric.name.lower(): [] for metric in state.metrics}}
         for hp_setting, hp_item in assessment_state.label_states[label_name].assessment_items.items():
             performance_metric['setting'].append(str(hp_setting))
             for metric in sorted(state.metrics, key=lambda metric: metric.name.lower()):
-                performance_metric[metric.name.lower()].append(HPHTMLBuilder._print_metric(hp_item.performance, metric))
+                performance_metric[metric.name.lower()].append(
+                    HPHTMLBuilder._print_metric(hp_item.performance, metric))
 
         s = io.StringIO()
         pd.DataFrame(performance_metric).rename(columns={"setting": 'Hyperparameter settings (preprocessing, encoding, ML method)'})\
@@ -207,7 +224,8 @@ class HPHTMLBuilder:
 
     @staticmethod
     def _make_assessment_reports(state, i, hp_setting_key, assessment_state, label_name: str, base_path: Path):
-        path = base_path / f"{state.name}_{label_name}_{hp_setting_key}_assessment_reports_split_{i + 1}.html"
+        path = base_path / \
+            f"{state.name}_{label_name}_{hp_setting_key}_assessment_reports_split_{i + 1}.html"
 
         hp_item = assessment_state.label_states[label_name].assessment_items[hp_setting_key]
         data = {
@@ -226,7 +244,8 @@ class HPHTMLBuilder:
         }
 
         if data["has_ml_reports"] or data["has_encoding_reports"]:
-            TemplateParser.parse(template_path=EnvironmentSettings.html_templates_path / "Reports.html", template_map=data, result_path=path)
+            TemplateParser.parse(template_path=EnvironmentSettings.html_templates_path /
+                                 "Reports.html", template_map=data, result_path=path)
             return path.name
         else:
             return None
@@ -246,7 +265,8 @@ class HPHTMLBuilder:
                     "split_details_path": HPHTMLBuilder._make_assessment_split_path(assessment_state.split_index, state.name, label_name)
                 })
 
-            mapping.append({"label": label_name, "assessment_results": results})
+            mapping.append(
+                {"label": label_name, "assessment_results": results})
 
         return mapping
 
@@ -300,22 +320,28 @@ class HPHTMLBuilder:
     @staticmethod
     def _move_reports_recursive(obj, path: Path):
         for attribute in (vars(obj) if not isinstance(obj, dict) else obj):
-            attribute_value = getattr(obj, attribute) if not isinstance(obj, dict) else obj[attribute]
+            attribute_value = getattr(obj, attribute) if not isinstance(
+                obj, dict) else obj[attribute]
             if isinstance(attribute_value, list) and all(isinstance(item, ReportResult) for item in attribute_value):
                 new_attribute_values = []
                 for report_result in attribute_value:
-                    new_attribute_values.append(Util.update_report_paths(report_result, path))
+                    new_attribute_values.append(
+                        Util.update_report_paths(report_result, path))
                 setattr(obj, attribute, new_attribute_values)
             elif isinstance(attribute_value, list) and all(isinstance(item, HPAssessmentState) for item in attribute_value):
-                obj = HPHTMLBuilder._process_list_recursively(obj, attribute, attribute_value, path)
+                obj = HPHTMLBuilder._process_list_recursively(
+                    obj, attribute, attribute_value, path)
             elif isinstance(attribute_value, dict) and all(
                     isinstance(item, HPLabelState) or isinstance(item, HPItem) for item in attribute_value.values()):
-                obj = HPHTMLBuilder._process_dict_recursive(obj, attribute, attribute_value, path)
+                obj = HPHTMLBuilder._process_dict_recursive(
+                    obj, attribute, attribute_value, path)
             elif isinstance(attribute_value, dict) and all(isinstance(item, list) for item in attribute_value.values()) and all(
                     all(isinstance(item, HPItem) for item in item_list) for item_list in attribute_value.values()):
-                obj = HPHTMLBuilder._process_hp_items(obj, attribute, attribute_value, path)
+                obj = HPHTMLBuilder._process_hp_items(
+                    obj, attribute, attribute_value, path)
             elif isinstance(attribute_value, HPSelectionState):
-                setattr(obj, attribute, HPHTMLBuilder._move_reports_recursive(attribute_value, path))
+                setattr(obj, attribute, HPHTMLBuilder._move_reports_recursive(
+                    attribute_value, path))
 
         return obj
 
@@ -325,35 +351,41 @@ class HPHTMLBuilder:
         for hp_setting, hp_item_list in attribute_value.items():
             new_hp_item_list = []
             for hp_item in hp_item_list:
-                new_hp_item_list.append(HPHTMLBuilder._move_reports_recursive(hp_item, path))
+                new_hp_item_list.append(
+                    HPHTMLBuilder._move_reports_recursive(hp_item, path))
             new_attribute_value[hp_setting] = new_hp_item_list
 
         setattr(obj, attribute, new_attribute_value)
-
+        print(obj)
         return obj
 
     @staticmethod
     def _process_dict_recursive(obj, attribute, attribute_value, path: Path):
         for key, value in attribute_value.items():
-            attribute_value[key] = HPHTMLBuilder._move_reports_recursive(value, path)
+            attribute_value[key] = HPHTMLBuilder._move_reports_recursive(
+                value, path)
         setattr(obj, attribute, attribute_value)
+        print(obj)
         return obj
 
     @staticmethod
     def _process_list_recursively(obj, attribute, attribute_value, path: Path):
         new_attribute_values = []
         for item in attribute_value:
-            new_attribute_values.append(HPHTMLBuilder._move_reports_recursive(item, path))
+            new_attribute_values.append(
+                HPHTMLBuilder._move_reports_recursive(item, path))
         setattr(obj, attribute, new_attribute_values)
         return obj
 
     @staticmethod
     def _extract_selection_performance_per_metric(selection_state: HPSelectionState, metric: Metric, split_count):
-        performance = {"setting": [], **{f"split {i + 1}": [] for i in range(split_count)}}
+        performance = {"setting": [], **{f"split {i + 1}": []
+                                         for i in range(split_count)}}
         for hp_setting, hp_item_list in selection_state.hp_items.items():
             performance['setting'].append(str(hp_setting))
             for index, hp_item in enumerate(hp_item_list):
-                performance[f'split {index + 1}'].append(HPHTMLBuilder._print_metric(hp_item.performance, metric))
+                performance[f'split {index + 1}'].append(
+                    HPHTMLBuilder._print_metric(hp_item.performance, metric))
 
         s = io.StringIO()
         pd.DataFrame(performance).rename(columns={"setting": 'Hyperparameter settings (preprocessing, encoding, ML method)'}).to_csv(s, sep="\t",

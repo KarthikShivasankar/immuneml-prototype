@@ -129,12 +129,11 @@ class TrainMLModelInstruction(Instruction):
         if cluster == True:
 
             cluster = Client()
+            print(cluster.__dict__)
 
         else:
 
             cluster = None
-
-        print(cluster.__dict__)
 
         self.state = TrainMLModelState(dataset, hp_strategy, hp_settings, assessment, selection, metrics,
                                        optimization_metric, label_configuration, path, context, number_of_processes,

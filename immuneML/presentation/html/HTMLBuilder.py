@@ -33,8 +33,11 @@ class HTMLBuilder:
     @staticmethod
     def build(states: list, path: Path) -> Path:
         rel_path = Path(os.path.relpath(str(path)))
-        presentations = HTMLBuilder._collect_all_presentations(states, rel_path)
-        presentation_html_path = HTMLBuilder._make_document(presentations, rel_path)
+        print(rel_path)
+        presentations = HTMLBuilder._collect_all_presentations(
+            states, rel_path)
+        presentation_html_path = HTMLBuilder._make_document(
+            presentations, rel_path)
         return presentation_html_path
 
     @staticmethod
@@ -60,9 +63,11 @@ class HTMLBuilder:
             lines = []
             for line in file.readlines():
                 if "href=" in line:
-                    lines.append(line.split("href=\"")[0] + "href=\"./HTML_output/" + line.split("href=\"")[1])
+                    lines.append(line.split("href=\"")[
+                                 0] + "href=\"./HTML_output/" + line.split("href=\"")[1])
                 elif "src=" in line:
-                    lines.append(line.split("src=\"")[0] + "src=\"./HTML_output/" + line.split("src=\"")[1])
+                    lines.append(line.split("src=\"")[
+                                 0] + "src=\"./HTML_output/" + line.split("src=\"")[1])
                 else:
                     lines.append(line)
 
@@ -74,12 +79,20 @@ class HTMLBuilder:
         presentations = []
 
         for state in states:
-            presentation_builder = PresentationFactory.make_presentation_builder(state, PresentationFormat.HTML)
+            presentation_builder = PresentationFactory.make_presentation_builder(
+                state, PresentationFormat.HTML)
+            print(presentation_builder)
             presentation_path = presentation_builder.build(state)
+            print(presentation_path)
             if len(states) > 1:
-                presentation_path = Path(os.path.relpath(str(presentation_path), str(rel_path)))
+                presentation_path = Path(os.path.relpath(
+                    str(presentation_path), str(rel_path)))
             instruction_class = type(state).__name__[:-5]
-            presentation = InstructionPresentation(presentation_path, instruction_class, state.name)
+            print(instruction_class)
+            print(state.name)
+            presentation = InstructionPresentation(
+                presentation_path, instruction_class, state.name)
             presentations.append(presentation)
+            print(presentations)
 
         return presentations

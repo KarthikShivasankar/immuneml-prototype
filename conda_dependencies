@@ -1,0 +1,10 @@
+conda install -c conda-forge pystache
+conda install -c conda-forge dask
+pip install onnxruntime
+conda install -c conda-forge skl2onnx
+conda install -c conda-forge dask-ml
+
+pip install python-dotenv
+
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+pip install -e .
